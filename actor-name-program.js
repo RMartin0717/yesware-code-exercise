@@ -6,6 +6,7 @@ const fileContents = fs.readFileSync('./testData.txt').toString()
 class ActorNameProgram {
   constructor(nameData) {
     this.nameData = this.structureData(nameData)
+    //create another dataset of names ordered by first name???
   }
 
   structureData(data) {
@@ -41,23 +42,42 @@ class ActorNameProgram {
   }
 
   uniqueFullNameCount() {
-    let counter = 0
+    let fullNameCounter = 0
     let previousName = { lastName: null, firstName: null }
     this.nameData.forEach(name => {
       if(previousName.lastName !== name.lastName || previousName.firstName !== name.firstName) {
-        counter++
+        fullNameCounter++
       }
       previousName = name
     })
-    return counter
+    return fullNameCounter
   }
 
   uniqueLastNameCount() {
-
+    let lastNameCounter = 0
+    let previousName = { lastName: null }
+    this.nameData.forEach(name => {
+      if(previousName.lastName !== name.lastName) {
+        lastNameCounter++
+      }
+      previousName = name
+    })
+    return lastNameCounter
   }
 
   uniqueFirstNameCount() {
-
+    const namesSortedByFirstName = this.nameData.sort((a,b) => a.firstName - b.firstName)
+    console.log(namesSortedByFirstName)
+    let firstNameCounter = 0
+    let previousName = { firstName: null }
+    namesSortedByFirstName.forEach(name => {
+      console.log(previousName.firstName === name.firstName)
+      if(previousName.firstName !== name.firstName) {
+        firstNameCounter++
+      }
+      previousName = name
+    })
+    return firstNameCounter
   }
 
   mostCommonLastNames() {
@@ -84,3 +104,6 @@ class ActorNameProgram {
 const names = new ActorNameProgram(fileContents)
 console.log(names.nameData)
 console.log(names.uniqueFullNameCount())
+console.log(names.uniqueLastNameCount())
+// console.log(names.uniqueFirstNameCount())
+//currently running into issues with this one with sorting by first name
