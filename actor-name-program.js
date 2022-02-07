@@ -41,7 +41,15 @@ class ActorNameProgram {
   }
 
   uniqueFullNameCount() {
-
+    let counter = 0
+    let previousName = { lastName: null, firstName: null }
+    this.nameData.forEach(name => {
+      if(previousName.lastName !== name.lastName || previousName.firstName !== name.firstName) {
+        counter++
+      }
+      previousName = name
+    })
+    return counter
   }
 
   uniqueLastNameCount() {
@@ -75,3 +83,4 @@ class ActorNameProgram {
 
 const names = new ActorNameProgram(fileContents)
 console.log(names.nameData)
+console.log(names.uniqueFullNameCount())
