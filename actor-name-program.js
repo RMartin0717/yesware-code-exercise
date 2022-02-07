@@ -14,7 +14,7 @@ class ActorNameProgram {
     const orderedNames = separatedNames.sort()
     //consider using forEach instead of reduce?
     //maybe in favor of reduce for immutability
-    const structuredNameData = orderedNames.reduce((acc, name) => {
+    const nameDataByLast = orderedNames.reduce((acc, name) => {
       const splitLastName = name.split(', ')
       //last element in separatedNames array comes back as empty string because it splits at the period/line break and sometimes theres an empty line after
       if(!splitLastName[1]) {
@@ -30,7 +30,10 @@ class ActorNameProgram {
         return [...acc, newName]
       }
     }, [])
-    return structuredNameData
+
+    const nameDataByFirst = nameDataByLast.sort((a,b) => a.firstName.localeCompare(b.firstName))
+
+    return { nameDataByLastName: nameDataByLast, nameDataByFirstName: nameDataByFirst }
   }
 
   checkNameNotValid(name) {
@@ -105,5 +108,5 @@ const names = new ActorNameProgram(fileContents)
 console.log(names.nameData)
 console.log(names.uniqueFullNameCount())
 console.log(names.uniqueLastNameCount())
-// console.log(names.uniqueFirstNameCount())
+console.log(names.uniqueFirstNameCount())
 //currently running into issues with this one with sorting by first name
