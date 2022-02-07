@@ -6,8 +6,15 @@ const fileContents = fs.readFileSync('./testData.txt').toString()
 class ActorNameProgram {
   constructor(nameData) {
     this.nameData = this.structureData(nameData)
-    //create another dataset of names ordered by first name???
-  }
+    //Data is stored as an object containing two key-value pairs, nameDataByLastName and nameDataByFirstName.
+      //These keys are assigned to arrays of name objects, sorted by last name and first name respecitvely.
+        //Each element in the arrays have the key-value pairs, lastName and firstName.
+    //It is not memory efficient to store multiple copies of all of the data.
+    //I would like to do more research into efficient ways of structuring data for these reasons.
+    //In the context of a Javascript class component,
+      //I chose this structure in order be more time efficient
+      //I chose to organize the data by last name and then create a copy of it organized by first name
+        //Given that access to an array sorted by first names improved efficiency of the uniqueFirstNameCount and mostCommonFirstNames methods
 
   structureData(data) {
     const separatedNames = data.split('.\n')
