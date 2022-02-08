@@ -90,18 +90,16 @@ class ActorNameProgram {
     return lastNameCounter
   }
 
-  mostCommonLastNames() {
-    //use this.nameData.nameDataByLastName
-    //if name matches previous name, create a key and start counting on
+  mostCommonNames(firstOrLastName, nameDataByFirstOrLastName) {
     let previousName = null
-    const repeatedNames = this.nameData.nameDataByLastName.reduce((acc, name) => {
-      if(name.lastName === previousName && !acc[name.lastName]) {
-        acc[name.lastName] = { name: name.lastName, count: 1}
+    const repeatedNames = this.nameData[nameDataByFirstOrLastName].reduce((acc, name) => {
+      if(name[firstOrLastName] === previousName && !acc[name[firstOrLastName]]) {
+        acc[name[firstOrLastName]] = { name: name[firstOrLastName], count: 1}
       }
-      if(name.lastName === previousName && acc[name.lastName]) {
-        acc[name.lastName].count ++
+      if(name[firstOrLastName] === previousName && acc[name[firstOrLastName]]) {
+        acc[name[firstOrLastName]].count ++
       }
-      previousName = name.lastName
+      previousName = name[firstOrLastName]
       return acc
     }, {})
 
@@ -109,10 +107,6 @@ class ActorNameProgram {
     const orderedByCount = nameCounts.sort((a,b) => b[1].count - a[1].count)
     const firstTen = orderedByCount.slice(0, 10)
     return firstTen
-  }
-
-  mostCommonFirstNames() {
-
   }
 
   speciallyUniqueNames() {
@@ -133,4 +127,5 @@ const names = new ActorNameProgram(fileContents)
 // console.log(names.uniqueFullNameCount())
 // console.log(names.uniqueLastNameCount())
 // console.log(names.uniqueFirstNameCount())
-console.log(names.mostCommonLastNames())
+console.log(names.mostCommonNames('lastName', 'nameDataByLastName'))
+console.log(names.mostCommonNames('firstName', 'nameDataByFirstName'))
