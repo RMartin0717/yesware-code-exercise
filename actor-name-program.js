@@ -1,5 +1,5 @@
 const fs = require('fs')
-const fileContents = fs.readFileSync('./testData.txt').toString()
+const fileContents = fs.readFileSync('./data.txt').toString()
 // const fileContents = fs.readFileSync('./data.txt').toString()
 
 
@@ -91,7 +91,24 @@ class ActorNameProgram {
   }
 
   mostCommonLastNames() {
+    //use this.nameData.nameDataByLastName
+    //if name matches previous name, create a key and start counting on
+    let previousName = null
+    const repeatedNames = this.nameData.nameDataByLastName.reduce((acc, name) => {
+      if(name.lastName === previousName && !acc[name.lastName]) {
+        acc[name.lastName] = { name: name.lastName, count: 1}
+      }
+      if(name.lastName === previousName && acc[name.lastName]) {
+        acc[name.lastName].count ++
+      }
+      previousName = name.lastName
+      return acc
+    }, {})
 
+    const nameCounts = Object.entries(repeatedNames)
+    const orderedByCount = nameCounts.sort((a,b) => b[1].count - a[1].count)
+    const firstTen = orderedByCount.slice(0, 10)
+    return firstTen
   }
 
   mostCommonFirstNames() {
@@ -112,8 +129,8 @@ class ActorNameProgram {
 }
 
 const names = new ActorNameProgram(fileContents)
-console.log(names.nameData)
-console.log(names.uniqueFullNameCount())
-console.log(names.uniqueLastNameCount())
-console.log(names.uniqueFirstNameCount())
-//currently running into issues with this one with sorting by first name
+// console.log(names.nameData)
+// console.log(names.uniqueFullNameCount())
+// console.log(names.uniqueLastNameCount())
+// console.log(names.uniqueFirstNameCount())
+console.log(names.mostCommonLastNames())
