@@ -58,7 +58,7 @@ class ActorNameProgram {
 
   uniqueFullNameCount() {
     //By storing names in alphabetical order by last name and iterating once over the array,
-    //this method is able to check the current name being iterated over against the previous name
+    //this method is (and the following 2 methods are) able to check the current name being iterated over against the previous name
     //using a variable to keep count and another variable to store only the previous name that was iterated over
     let fullNameCounter = 0
     let previousName = { lastName: null, firstName: null }
@@ -113,6 +113,8 @@ class ActorNameProgram {
     let usedFirstNames = []
     let usedLastNames = []
 
+    //Used a for loop in order to exit out of the function once n specially unique names are found
+    //OR to exit out of the function in the instance that there are no more names in the original dataset to iterate over but the number of specially unique names is not yet met
     for (let i = 0; uniqueNames.length < (n + 1) && i < this.nameData.nameDataUnordered.length; i++) {
       if(!usedFirstNames.includes(this.nameData.nameDataUnordered[i].firstName) &&
         !usedLastNames.includes(this.nameData.nameDataUnordered[i].lastName)) {
@@ -124,8 +126,18 @@ class ActorNameProgram {
     return uniqueNames
   }
 
-  modifiedNames() {
-    // First save first element’s first name as variable and when last element is reached, assign that first name to the initial first name. Iterate over last names and create array reassigning the first names to the first name of the next element
+  modifiedNames(n) {
+    const uniqueNames = this.speciallyUniqueNames(n)
+    let firstFirstName = uniqueNames[0].firstName
+    const modifyNames = uniqueNames.map((name, index) => {
+      if(index < uniqueNames.length - 1) {
+        return { lastName: name.lastName, firstName: uniqueNames[index + 1].firstName }
+      } else {
+        return { lastName: name.lastName, firstName: firstFirstName }
+      }
+      return
+    })
+    return modifyNames
   }
 
   callAllOutptMethods() {
@@ -141,3 +153,4 @@ const names = new ActorNameProgram(fileContents)
 // console.log(names.mostCommonNames('lastName', 'nameDataByLastName'))
 // console.log(names.mostCommonNames('firstName', 'nameDataByFirstName'))
 console.log(names.speciallyUniqueNames(25))
+console.log(names.modifiedNames(25))
