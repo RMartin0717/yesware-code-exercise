@@ -15,6 +15,7 @@ class ActorNameProgram {
       //I chose this structure in order be more time efficient
       //I chose to organize the data by last name and then create a copy of it organized by first name
         //Given that access to an array sorted by first names improved efficiency of the uniqueFirstNameCount and mostCommonFirstNames methods
+  }
 
   structureData(data) {
     const separatedNames = data.split('.\n')
@@ -38,7 +39,9 @@ class ActorNameProgram {
       }
     }, [])
 
-    const nameDataByFirst = nameDataByLast.sort((a,b) => a.firstName.localeCompare(b.firstName))
+    const namesCopy = nameDataByLast.slice()
+    //created a copy of the array since .sort() mutates the original array
+    const nameDataByFirst = namesCopy.sort((a,b) => a.firstName.localeCompare(b.firstName))
 
     return { nameDataByLastName: nameDataByLast, nameDataByFirstName: nameDataByFirst }
   }
@@ -54,7 +57,7 @@ class ActorNameProgram {
   uniqueFullNameCount() {
     let fullNameCounter = 0
     let previousName = { lastName: null, firstName: null }
-    this.nameData.forEach(name => {
+    this.nameData.nameDataByLastName.forEach(name => {
       if(previousName.lastName !== name.lastName || previousName.firstName !== name.firstName) {
         fullNameCounter++
       }
@@ -66,7 +69,7 @@ class ActorNameProgram {
   uniqueLastNameCount() {
     let lastNameCounter = 0
     let previousName = { lastName: null }
-    this.nameData.forEach(name => {
+    this.nameData.nameDataByLastName.forEach(name => {
       if(previousName.lastName !== name.lastName) {
         lastNameCounter++
       }
@@ -76,18 +79,15 @@ class ActorNameProgram {
   }
 
   uniqueFirstNameCount() {
-    const namesSortedByFirstName = this.nameData.sort((a,b) => a.firstName - b.firstName)
-    console.log(namesSortedByFirstName)
-    let firstNameCounter = 0
+    let lastNameCounter = 0
     let previousName = { firstName: null }
-    namesSortedByFirstName.forEach(name => {
-      console.log(previousName.firstName === name.firstName)
+    this.nameData.nameDataByFirstName.forEach(name => {
       if(previousName.firstName !== name.firstName) {
-        firstNameCounter++
+        lastNameCounter++
       }
       previousName = name
     })
-    return firstNameCounter
+    return lastNameCounter
   }
 
   mostCommonLastNames() {
