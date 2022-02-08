@@ -54,16 +54,16 @@ class ActorNameProgram {
     }
   }
 
-  uniqueFirstNameCount() {
-    let lastNameCounter = 0
-    let previousName = { firstName: null }
-    this.nameData.nameDataByFirstName.forEach(name => {
-      if(previousName.firstName !== name.firstName) {
-        lastNameCounter++
+  uniqueFullNameCount() {
+    let fullNameCounter = 0
+    let previousName = { lastName: null, firstName: null }
+    this.nameData.nameDataByLastName.forEach(name => {
+      if(previousName.lastName !== name.lastName || previousName.firstName !== name.firstName) {
+        fullNameCounter++
       }
       previousName = name
     })
-    return lastNameCounter
+    return fullNameCounter
   }
 
   uniqueNameCount(firstOrLastName, nameDataByFirstOrLastName) {
