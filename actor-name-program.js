@@ -21,7 +21,7 @@ class ActorNameProgram {
     const separatedNames = data.split('.\n')
     //consider using forEach instead of reduce?
     //maybe in favor of reduce for immutability
-    const nameData = separatedNames.reduce((acc, name) => {
+    const nameDataUnordered = separatedNames.reduce((acc, name) => {
       const splitLastName = name.split(', ')
       //last element in separatedNames array comes back as empty string because it splits at the period/line break and sometimes theres an empty line after
       if(!splitLastName[1]) {
@@ -38,11 +38,11 @@ class ActorNameProgram {
       }
     }, [])
 
-    const nameDataByLast = nameData.slice().sort((a,b) => a.lastName.localeCompare(b.lastName))
-    const nameDataByFirst = nameData.slice().sort((a,b) => a.firstName.localeCompare(b.firstName))
+    const nameDataByLast = nameDataUnordered.slice().sort((a,b) => a.lastName.localeCompare(b.lastName))
+    const nameDataByFirst = nameDataUnordered.slice().sort((a,b) => a.firstName.localeCompare(b.firstName))
 
     return {
-      nameData: nameData,
+      nameDataUnordered: nameDataUnordered,
       nameDataByLastName: nameDataByLast,
       nameDataByFirstName: nameDataByFirst
     }
@@ -108,10 +108,20 @@ class ActorNameProgram {
     return firstTen
   }
 
-  speciallyUniqueNames() {
-    //use for loop and return the array when the uniqueNameArray.length === a variable amount?
-    //while iterating over names in order of ORIGINAL FILE, store first and last names to check against
-    //if array of stored names already looked at includes current name, don't add current name to uniqueNameArray
+  speciallyUniqueNames(n) {
+    let uniqueNames = []
+    let usedFirstNames = []
+    let usedLastNames = []
+
+    for (let i = 0; uniqueNames.length < (n + 1) && i < this.nameData.nameDataUnordered.length; i++) {
+      if(!usedFirstNames.includes(this.nameData.nameDataUnordered[i].firstName) &&
+        !usedLastNames.includes(this.nameData.nameDataUnordered[i].lastName)) {
+          uniqueNames.push(this.nameData.nameDataUnordered[i])
+      }
+        usedLastNames.push(this.nameData.nameDataUnordered[i].lastName)
+        usedFirstNames.push(this.nameData.nameDataUnordered[i].firstName)
+    }
+    return uniqueNames
   }
 
   modifiedNames() {
@@ -124,9 +134,10 @@ class ActorNameProgram {
 }
 
 const names = new ActorNameProgram(fileContents)
-console.log(names.nameData)
+// console.log(names.nameData)
 // console.log(names.uniqueFullNameCount())
 // console.log(names.uniqueNameCount('lastName', 'nameDataByLastName'))
 // console.log(names.uniqueNameCount('firstName', 'nameDataByFirstName'))
 // console.log(names.mostCommonNames('lastName', 'nameDataByLastName'))
 // console.log(names.mostCommonNames('firstName', 'nameDataByFirstName'))
+console.log(names.speciallyUniqueNames(25))
