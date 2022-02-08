@@ -1,5 +1,5 @@
 const fs = require('fs')
-const fileContents = fs.readFileSync('./data.txt').toString()
+const fileContents = fs.readFileSync('./testData.txt').toString()
 // const fileContents = fs.readFileSync('./data.txt').toString()
 
 
@@ -54,30 +54,6 @@ class ActorNameProgram {
     }
   }
 
-  uniqueFullNameCount() {
-    let fullNameCounter = 0
-    let previousName = { lastName: null, firstName: null }
-    this.nameData.nameDataByLastName.forEach(name => {
-      if(previousName.lastName !== name.lastName || previousName.firstName !== name.firstName) {
-        fullNameCounter++
-      }
-      previousName = name
-    })
-    return fullNameCounter
-  }
-
-  uniqueLastNameCount() {
-    let lastNameCounter = 0
-    let previousName = { lastName: null }
-    this.nameData.nameDataByLastName.forEach(name => {
-      if(previousName.lastName !== name.lastName) {
-        lastNameCounter++
-      }
-      previousName = name
-    })
-    return lastNameCounter
-  }
-
   uniqueFirstNameCount() {
     let lastNameCounter = 0
     let previousName = { firstName: null }
@@ -89,6 +65,19 @@ class ActorNameProgram {
     })
     return lastNameCounter
   }
+
+  uniqueNameCount(firstOrLastName, nameDataByFirstOrLastName) {
+    let nameCounter = 0
+    let previousName = { [firstOrLastName]: null }
+    this.nameData[nameDataByFirstOrLastName].forEach(name => {
+      if(previousName[firstOrLastName] !== name[firstOrLastName]) {
+        nameCounter++
+      }
+      previousName = name
+    })
+    return nameCounter
+  }
+
 
   mostCommonNames(firstOrLastName, nameDataByFirstOrLastName) {
     let previousName = null
@@ -123,9 +112,9 @@ class ActorNameProgram {
 }
 
 const names = new ActorNameProgram(fileContents)
-// console.log(names.nameData)
+console.log(names.nameData)
 // console.log(names.uniqueFullNameCount())
-// console.log(names.uniqueLastNameCount())
-// console.log(names.uniqueFirstNameCount())
-console.log(names.mostCommonNames('lastName', 'nameDataByLastName'))
-console.log(names.mostCommonNames('firstName', 'nameDataByFirstName'))
+console.log(names.uniqueNameCount('lastName', 'nameDataByLastName'))
+console.log(names.uniqueNameCount('firstName', 'nameDataByFirstName'))
+// console.log(names.mostCommonNames('lastName', 'nameDataByLastName'))
+// console.log(names.mostCommonNames('firstName', 'nameDataByFirstName'))
