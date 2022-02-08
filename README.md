@@ -1,4 +1,4 @@
-# Actor Name Program
+# Yesware Actor Name Program Code Exercise
 
 ## Description
 This repo was built for the Yesware full stack engineer position code exercise. 
