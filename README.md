@@ -18,9 +18,9 @@ When run in the command line, the program outputs the following:
 
 **There are 467 unique last names**
 
-**There are 3006 unique first names
+**There are 3006 unique first names**
 
-**The 10 most common last names are:
+**The 10 most common last names are:**
 
  143 instances of Barton,
  
@@ -42,7 +42,7 @@ When run in the command line, the program outputs the following:
  
  127 instances of Crist
 
-**The 10 most common first names are:
+**The 10 most common first names are:**
  
  31 instances of Andreanne,
  
@@ -64,7 +64,7 @@ When run in the command line, the program outputs the following:
  
  30 instances of Ulices
 
-**The 25 specially unique names are 
+**The 25 specially unique names are:**
   
   Graham, Mckenna,
   
@@ -116,7 +116,7 @@ When run in the command line, the program outputs the following:
   
   Dickinson, Sonya
 
-**The 25 modified names are 
+**The 25 modified names are:**
   
   Graham, Garfield,
   
