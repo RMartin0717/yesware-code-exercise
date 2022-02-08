@@ -6,23 +6,22 @@ const fileContents = fs.readFileSync('./testData.txt').toString()
 class ActorNameProgram {
   constructor(nameData) {
     this.nameData = this.structureData(nameData)
-    //Data is stored as an object containing two key-value pairs, nameDataByLastName and nameDataByFirstName.
-      //These keys are assigned to arrays of name objects, sorted by last name and first name respecitvely.
+    //Data is stored as an object containing three key-value pairs, nameData, nameDataByLastName and nameDataByFirstName.
+      //These keys are assigned to arrays of name objects. nameData contains the reformated names in the same order as originally given. nameDataByLastName and nameDataByFirstName sort all of the names by last name and first name respecitvely.
         //Each element in the arrays have the key-value pairs, lastName and firstName.
     //It is not memory efficient to store multiple copies of all of the data.
-    //I would like to do more research into efficient ways of structuring data for these reasons.
+    //I would like to do more research into efficient ways of structuring data to save on space/memory
     //In the context of a Javascript class component,
       //I chose this structure in order be more time efficient
-      //I chose to organize the data by last name and then create a copy of it organized by first name
-        //Given that access to an array sorted by first names improved efficiency of the uniqueFirstNameCount and mostCommonFirstNames methods
+      //I chose to reformat the data so that each name datapoint was its own object and then created copies of the array of names to organize it by first and last name
+        //Given that access to an existing array would improve time efficiency sorting by first names and last names in the majority of the methods
   }
 
   structureData(data) {
     const separatedNames = data.split('.\n')
-    const orderedNames = separatedNames.sort()
     //consider using forEach instead of reduce?
     //maybe in favor of reduce for immutability
-    const nameDataByLast = orderedNames.reduce((acc, name) => {
+    const nameData = separatedNames.reduce((acc, name) => {
       const splitLastName = name.split(', ')
       //last element in separatedNames array comes back as empty string because it splits at the period/line break and sometimes theres an empty line after
       if(!splitLastName[1]) {
@@ -39,11 +38,14 @@ class ActorNameProgram {
       }
     }, [])
 
-    const namesCopy = nameDataByLast.slice()
-    //created a copy of the array since .sort() mutates the original array
-    const nameDataByFirst = namesCopy.sort((a,b) => a.firstName.localeCompare(b.firstName))
+    const nameDataByLast = nameData.slice().sort((a,b) => a.lastName.localeCompare(b.lastName))
+    const nameDataByFirst = nameData.slice().sort((a,b) => a.firstName.localeCompare(b.firstName))
 
-    return { nameDataByLastName: nameDataByLast, nameDataByFirstName: nameDataByFirst }
+    return {
+      nameData: nameData,
+      nameDataByLastName: nameDataByLast,
+      nameDataByFirstName: nameDataByFirst
+    }
   }
 
   checkNameNotValid(name) {
@@ -55,6 +57,9 @@ class ActorNameProgram {
   }
 
   uniqueFullNameCount() {
+    //By storing names in alphabetical order by last name and iterating once over the array,
+    //this method is able to check the current name being iterated over against the previous name
+    //using a variable to keep count and another variable to store only the previous name that was iterated over
     let fullNameCounter = 0
     let previousName = { lastName: null, firstName: null }
     this.nameData.nameDataByLastName.forEach(name => {
@@ -67,6 +72,9 @@ class ActorNameProgram {
   }
 
   uniqueNameCount(firstOrLastName, nameDataByFirstOrLastName) {
+    //This method requires one of the following sets of parameters
+      //'lastName', 'nameDataByLastName'
+      //'firstName', 'nameDataByFirstName'
     let nameCounter = 0
     let previousName = { [firstOrLastName]: null }
     this.nameData[nameDataByFirstOrLastName].forEach(name => {
@@ -78,8 +86,10 @@ class ActorNameProgram {
     return nameCounter
   }
 
-
   mostCommonNames(firstOrLastName, nameDataByFirstOrLastName) {
+    //This method requires one of the following sets of parameters
+      //'lastName', 'nameDataByLastName'
+      //'firstName', 'nameDataByFirstName'
     let previousName = null
     const repeatedNames = this.nameData[nameDataByFirstOrLastName].reduce((acc, name) => {
       if(name[firstOrLastName] === previousName && !acc[name[firstOrLastName]]) {
@@ -99,11 +109,13 @@ class ActorNameProgram {
   }
 
   speciallyUniqueNames() {
-
+    //use for loop and return the array when the uniqueNameArray.length === a variable amount?
+    //while iterating over names in order of ORIGINAL FILE, store first and last names to check against
+    //if array of stored names already looked at includes current name, don't add current name to uniqueNameArray
   }
 
   modifiedNames() {
-
+    // First save first element’s first name as variable and when last element is reached, assign that first name to the initial first name. Iterate over last names and create array reassigning the first names to the first name of the next element
   }
 
   callAllOutptMethods() {
@@ -114,7 +126,7 @@ class ActorNameProgram {
 const names = new ActorNameProgram(fileContents)
 console.log(names.nameData)
 // console.log(names.uniqueFullNameCount())
-console.log(names.uniqueNameCount('lastName', 'nameDataByLastName'))
-console.log(names.uniqueNameCount('firstName', 'nameDataByFirstName'))
+// console.log(names.uniqueNameCount('lastName', 'nameDataByLastName'))
+// console.log(names.uniqueNameCount('firstName', 'nameDataByFirstName'))
 // console.log(names.mostCommonNames('lastName', 'nameDataByLastName'))
 // console.log(names.mostCommonNames('firstName', 'nameDataByFirstName'))
