@@ -1,7 +1,5 @@
 const fs = require('fs')
 const fileContents = fs.readFileSync('./data.txt').toString()
-// const fileContents = fs.readFileSync('./data.txt').toString()
-
 
 class ActorNameProgram {
   constructor(nameData) {
@@ -19,10 +17,10 @@ class ActorNameProgram {
 
   structureData(data) {
     const separatedNames = data.split('.\n')
-    //consider using map instead of reduce?
     const nameDataUnordered = separatedNames.reduce((acc, name) => {
       const splitLastName = name.split(', ')
-      //last element in separatedNames array comes back as empty string because it splits at the period/line break and sometimes theres an empty line after
+
+      //The last element in separatedNames array sometimes comes back as empty string because it splits at the period/line break and sometimes theres an empty line after. The following conditional handles this
       if(!splitLastName[1]) {
         return acc
       } else {
