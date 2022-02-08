@@ -1,5 +1,5 @@
 const fs = require('fs')
-const fileContents = fs.readFileSync('./testData.txt').toString()
+const fileContents = fs.readFileSync('./data.txt').toString()
 // const fileContents = fs.readFileSync('./data.txt').toString()
 
 
@@ -19,8 +19,7 @@ class ActorNameProgram {
 
   structureData(data) {
     const separatedNames = data.split('.\n')
-    //consider using forEach instead of reduce?
-    //maybe in favor of reduce for immutability
+    //consider using map instead of reduce?
     const nameDataUnordered = separatedNames.reduce((acc, name) => {
       const splitLastName = name.split(', ')
       //last element in separatedNames array comes back as empty string because it splits at the period/line break and sometimes theres an empty line after
@@ -68,7 +67,7 @@ class ActorNameProgram {
       }
       previousName = name
     })
-    return fullNameCounter
+    return `There are ${fullNameCounter} unique full names`
   }
 
   uniqueNameCount(firstOrLastName, nameDataByFirstOrLastName) {
@@ -83,7 +82,10 @@ class ActorNameProgram {
       }
       previousName = name
     })
-    return nameCounter
+
+    let firstOrLast = firstOrLastName.split('Name')[0]
+
+    return `There are ${nameCounter} unique ${firstOrLast} names`
   }
 
   mostCommonNames(firstOrLastName, nameDataByFirstOrLastName) {
@@ -105,17 +107,23 @@ class ActorNameProgram {
     const nameCounts = Object.entries(repeatedNames)
     const orderedByCount = nameCounts.sort((a,b) => b[1].count - a[1].count)
     const firstTen = orderedByCount.slice(0, 10)
-    return firstTen
+
+    let firstOrLast = firstOrLastName.split('Name')[0]
+    let formatList = firstTen.map(name => {
+      return `\n ${name[1].count} instances of ${name[1].name}`
+    })
+
+    return `The 10 most common ${firstOrLast} names are:${formatList}`
   }
 
-  speciallyUniqueNames(n) {
+  getSpeciallyUniqueNames(n) {
     let uniqueNames = []
     let usedFirstNames = []
     let usedLastNames = []
 
     //Used a for loop in order to exit out of the function once n specially unique names are found
     //OR to exit out of the function in the instance that there are no more names in the original dataset to iterate over but the number of specially unique names is not yet met
-    for (let i = 0; uniqueNames.length < (n + 1) && i < this.nameData.nameDataUnordered.length; i++) {
+    for (let i = 0; uniqueNames.length < (n) && i < this.nameData.nameDataUnordered.length; i++) {
       if(!usedFirstNames.includes(this.nameData.nameDataUnordered[i].firstName) &&
         !usedLastNames.includes(this.nameData.nameDataUnordered[i].lastName)) {
           uniqueNames.push(this.nameData.nameDataUnordered[i])
@@ -126,8 +134,17 @@ class ActorNameProgram {
     return uniqueNames
   }
 
+  speciallyUniqueNames(n) {
+    const uniqueNames = this.getSpeciallyUniqueNames(n)
+
+    let formatUniqueNames = uniqueNames.map(name => {
+      return `\n  ${name.lastName}, ${name.firstName}`
+    })
+    return `The ${n} specially unique names are ${formatUniqueNames}`
+  }
+
   modifiedNames(n) {
-    const uniqueNames = this.speciallyUniqueNames(n)
+    const uniqueNames = this.getSpeciallyUniqueNames(n)
     let firstFirstName = uniqueNames[0].firstName
     const modifyNames = uniqueNames.map((name, index) => {
       if(index < uniqueNames.length - 1) {
@@ -137,20 +154,20 @@ class ActorNameProgram {
       }
       return
     })
-    return modifyNames
-  }
 
-  callAllOutptMethods() {
-
+    let formatModifyNames = modifyNames.map(name => {
+      return `\n  ${name.lastName}, ${name.firstName}`
+    })
+    return `The ${n} modified names are ${formatModifyNames}`
   }
 }
 
 const names = new ActorNameProgram(fileContents)
 // console.log(names.nameData)
-// console.log(names.uniqueFullNameCount())
-// console.log(names.uniqueNameCount('lastName', 'nameDataByLastName'))
-// console.log(names.uniqueNameCount('firstName', 'nameDataByFirstName'))
-// console.log(names.mostCommonNames('lastName', 'nameDataByLastName'))
-// console.log(names.mostCommonNames('firstName', 'nameDataByFirstName'))
+console.log(names.uniqueFullNameCount())
+console.log(names.uniqueNameCount('lastName', 'nameDataByLastName'))
+console.log(names.uniqueNameCount('firstName', 'nameDataByFirstName'))
+console.log(names.mostCommonNames('lastName', 'nameDataByLastName'))
+console.log(names.mostCommonNames('firstName', 'nameDataByFirstName'))
 console.log(names.speciallyUniqueNames(25))
 console.log(names.modifiedNames(25))
