@@ -4,7 +4,8 @@ const fileContents = fs.readFileSync('./data.txt').toString()
 class ActorNameProgram {
   constructor(nameData) {
     this.nameData = this.structureData(nameData)
-    //Data is stored as an object containing three key-value pairs, nameData, nameDataByLastName and nameDataByFirstName.
+    this.uniqueNames = []
+    //nameData is stored as an object containing three key-value pairs, nameData, nameDataByLastName and nameDataByFirstName.
       //These keys are assigned to arrays of name objects. nameData contains the reformated names in the same order as originally given. nameDataByLastName and nameDataByFirstName sort all of the names by last name and first name respecitvely.
         //Each element in the arrays have the key-value pairs, lastName and firstName.
     //It is not memory efficient to store multiple copies of all of the data.
@@ -17,9 +18,9 @@ class ActorNameProgram {
 
   structureData(data) {
     const separatedNames = data.split('.\n')
+
     const nameDataUnordered = separatedNames.reduce((acc, name) => {
       const splitLastName = name.split(', ')
-
       //The last element in separatedNames array sometimes comes back as empty string because it splits at the period/line break and sometimes theres an empty line after. The following conditional handles this
       if(!splitLastName[1]) {
         return acc
@@ -54,7 +55,7 @@ class ActorNameProgram {
   }
 
   uniqueFullNameCount() {
-    //By storing names in alphabetical order by last name and iterating once over the array,
+    //By storing names in alphabetical order in state by last name and iterating once over the array,
     //this method is (and the following 2 methods are) able to check the current name being iterated over against the previous name
     //using a variable to keep count and another variable to store only the previous name that was iterated over
     let fullNameCounter = 0
@@ -92,6 +93,7 @@ class ActorNameProgram {
       //'firstName', 'nameDataByFirstName'
     let previousName = null
     const repeatedNames = this.nameData[nameDataByFirstOrLastName].reduce((acc, name) => {
+      //Only stores a name that has already been repeated. Eliminates storage of names that only appear once
       if(name[firstOrLastName] === previousName && !acc[name[firstOrLastName]]) {
         acc[name[firstOrLastName]] = { name: name[firstOrLastName], count: 1}
       }
@@ -115,6 +117,13 @@ class ActorNameProgram {
   }
 
   getSpeciallyUniqueNames(n) {
+    //When run for the first time with a specific value for n, stores specially unique names as state
+    //If it has been run before with that same amount, it exits out
+    //Methods that use this information run this method and then look to stored state
+    //State is reset if a new value for n is needed
+    if(this.uniqueNames.length === n) {
+      return
+    }
     let uniqueNames = []
     let usedFirstNames = []
     let usedLastNames = []
@@ -129,24 +138,25 @@ class ActorNameProgram {
         usedLastNames.push(this.nameData.nameDataUnordered[i].lastName)
         usedFirstNames.push(this.nameData.nameDataUnordered[i].firstName)
     }
-    return uniqueNames
+    this.uniqueNames = uniqueNames
+    return
   }
 
   speciallyUniqueNames(n) {
-    const uniqueNames = this.getSpeciallyUniqueNames(n)
+    this.getSpeciallyUniqueNames(n)
 
-    let formatUniqueNames = uniqueNames.map(name => {
+    let formatUniqueNames = this.uniqueNames.map(name => {
       return `\n  ${name.lastName}, ${name.firstName}`
     })
     return `The ${n} specially unique names are:${formatUniqueNames}`
   }
 
   modifiedNames(n) {
-    const uniqueNames = this.getSpeciallyUniqueNames(n)
-    let firstFirstName = uniqueNames[0].firstName
-    const modifyNames = uniqueNames.map((name, index) => {
-      if(index < uniqueNames.length - 1) {
-        return { lastName: name.lastName, firstName: uniqueNames[index + 1].firstName }
+    this.getSpeciallyUniqueNames(n)
+    let firstFirstName = this.uniqueNames[0].firstName
+    const modifyNames = this.uniqueNames.map((name, index) => {
+      if(index < this.uniqueNames.length - 1) {
+        return { lastName: name.lastName, firstName: this.uniqueNames[index + 1].firstName }
       } else {
         return { lastName: name.lastName, firstName: firstFirstName }
       }
