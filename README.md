@@ -14,9 +14,9 @@ Run `node actor-name-program.js` from the root of the project in the command lin
 ## Output
 When run in the command line, the program outputs the following:
 
-**There are 49110 unique full names
+**There are 49110 unique full names**
 
-**There are 467 unique last names
+**There are 467 unique last names**
 
 **There are 3006 unique first names
 
