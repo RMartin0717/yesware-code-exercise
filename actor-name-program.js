@@ -138,7 +138,7 @@ class ActorNameProgram {
     let formatUniqueNames = uniqueNames.map(name => {
       return `\n  ${name.lastName}, ${name.firstName}`
     })
-    return `The ${n} specially unique names are ${formatUniqueNames}`
+    return `The ${n} specially unique names are:${formatUniqueNames}`
   }
 
   modifiedNames(n) {
@@ -156,7 +156,7 @@ class ActorNameProgram {
     let formatModifyNames = modifyNames.map(name => {
       return `\n  ${name.lastName}, ${name.firstName}`
     })
-    return `The ${n} modified names are ${formatModifyNames}`
+    return `The ${n} modified names are:${formatModifyNames}`
   }
 }
 
